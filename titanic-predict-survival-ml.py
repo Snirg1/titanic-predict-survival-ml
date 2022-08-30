@@ -1,7 +1,3 @@
-# # Download the "Titanic - Machine Learning from Disaster" dataset from Kaggle (registration required)
-# # https://www.kaggle.com/competitions/titanic/
-# # The goal is to explore the dataset a bit, get some insights about important attributes of survivors and build an end-to-end machine learning model which predicts the survival of passengers on board the Titanic.
-# # We first explore the data, and then try to predict the survival odds.
 # # The main function implements an end-to-end classification pipeline including mainly a data EDA and prediction parts.
 
 import numpy as np
@@ -9,26 +5,21 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import sklearn as skl
 from sklearn.preprocessing import OneHotEncoder
-
 plt.ion()
 
 
-# 1.
-## 1.1.
 ## Load train.csv
 def load_train_data():
     df_train = pd.read_csv('train.csv')
     return df_train
 
 
-## 1.2.
 ## Display some data - display the top 10 rows
 def disp_some_data(df_train):
     print(df_train.head(10))
     return
 
 
-## 1.3.
 ## In order to know what to do with which columns, we must know what types are there, and how many different values are there for each.
 def display_column_data(df_train, max_vals=10):
     info = df_train.info()
@@ -36,9 +27,6 @@ def display_column_data(df_train, max_vals=10):
 
     num_uq_vals_sr = df_train.nunique()
     print(num_uq_vals_sr)
-
-    # num_uq_vals_sr = df_train.nunique(dropna=False)
-    # print(num_uq_vals_sr)
 
     mask = num_uq_vals_sr < max_vals
     columns_to_print = num_uq_vals_sr[mask].index
@@ -48,7 +36,6 @@ def display_column_data(df_train, max_vals=10):
     return
 
 
-## 1.4
 ## Now that we know which columns are there, we can drop some of them - the ones that do not carry predictive power.
 ## In addition we will drop columns that we do not know how to handle such as free text.
 ## Drop the columns: PassengerId, Name, Ticket, Cabin
@@ -58,9 +45,7 @@ def drop_non_inform_columns(df_train):
     return df_lean
 
 
-# 2.
 # Now that we know the basics about our dataset, we can start cleaning & transforming it towards enabling prediction of survival
-# 2.1
 # In which columns are there missing values?
 def where_are_the_nans(df_lean):
     mask = df_lean.isna().any()
@@ -73,7 +58,6 @@ def where_are_the_nans(df_lean):
     return cols_with_nans
 
 
-# 2.2
 # We see that the columns 'Age' and 'Embarked' have missing values. We need to fill them.
 # Let's fill 'Age' with the average and 'Embarked' with the most common
 def fill_titanic_nas(df_lean):
@@ -85,7 +69,6 @@ def fill_titanic_nas(df_lean):
     return df_filled
 
 
-# ## 2.3
 # ## Now that we filled up all the missing values, we want to convert the non-numerical (categorical) variables
 # ## to some numeric representation - so we can apply numerical schemes to it.
 # ## We'll encode "Embarked" and "Pclass", using the "one-hot" method
@@ -109,7 +92,6 @@ def encode_one_hot(df_filled):
     return df_one_hot
 
 
-## 2.4
 ## There are 2 variables (columns) that reflect co-travelling family of each passenger.
 ## SibSp - the number of sibling - brothers and sisters.
 ## Parch - the total number of parents plus children for each passneger.
@@ -122,7 +104,7 @@ def make_family(df_one_hot):
     return df_one_hot
 
 
-# ## 2.5 Feature Transformation
+# ## Feature Transformation
 # ## In many cases, it is the *multiplicative* change in some numeric variable that affects the outcome, not the *additive* one.
 # ## For example, we expect that the change of survival probability of 16 year olds relative to 12 year olds is *much greater*
 # ## than the change of survival probability of 48 year olds relative to 44 year olds.
@@ -137,10 +119,10 @@ def add_log1p(df_one_hot):
     return df_one_hot
 
 
-# 3. Basic exploration of survival.
+# Basic exploration of survival.
 # This section deals with correlations of the "Survived" column to various other data about the passengers.
 # Also, in this section, we can still use the df_filled DataFrame, without "one-hot" encoding. It is up to you.
-## 3.1. Survival vs gender
+## Survival vs gender
 def survival_vs_gender(df):
     df_male = df[df['Bin_sex'] == 0]
     df_female = df[df['Bin_sex'] == 1]
@@ -152,7 +134,7 @@ def survival_vs_gender(df):
     return survived_by_gender
 
 
-## 3.2 The same for survival by class. You can use the "one-hot" encoding, or the original "Pclass" column - whatever more convenient to you.
+##  The same for survival by class. You can use the "one-hot" encoding, or the original "Pclass" column - whatever more convenient to you.
 def survival_vs_class(df):
     df1 = df[df['Pclass'] == 1]
     df2 = df[df['Pclass'] == 2]
@@ -166,7 +148,7 @@ def survival_vs_class(df):
     return survived_by_class
 
 
-## 3.3 The same, for survival by the three family size metrics. Return a dict of dicts / series
+## The same, for survival by the three family size metrics. Return a dict of dicts / series
 def survival_vs_family(df):
     survived_by_family = {}
     highest = 0
@@ -199,7 +181,7 @@ def survival_vs_family(df):
     return survived_by_family
 
 
-## 3.4 Visualizing the distribution of age and its impact on survival
+## Visualizing the distribution of age and its impact on survival
 def survival_vs_age(df):
     sur_age_df = df[['Age', 'Survived']]
 
@@ -217,7 +199,7 @@ def survival_vs_age(df):
     return
 
 
-# 3.5 Correlation of survival to the numerical variables
+# Correlation of survival to the numerical variables
 # ['Age', 'SibSp', 'Parch', 'Fare', 'Family']
 # ['log1p_Age', 'log1p_SibSp', 'log1p_Parch', 'log1p_Fare', 'log1p_Family']
 def survival_correlations(df):
@@ -245,7 +227,7 @@ def survival_correlations(df):
     return important_corrs
 
 
-# 4. Predicting survival!!!
+# Predicting survival!!!
 # We're finally ready to build a model and predict survival!
 # In this section, df_one_hot include all the transformations and additions we've done to the data, including, of course, the one-hot
 # encoding of class and port of boarding (Embarked), and the binary "Sex" column, and also with the addition of the log1p scaled variables.
@@ -253,7 +235,7 @@ def survival_correlations(df):
 # Based on the correlations of the numeric data to survival, and the impact of the categorical data, we will pick the best features
 # that will yield the best testing results.
 
-## 4.1 split data into train and test sets
+##  split data into train and test sets
 def split_data(df_one_hot):
     from sklearn.model_selection import train_test_split
     df_one_hot = df_one_hot.drop(
@@ -272,7 +254,7 @@ def split_data(df_one_hot):
     return X_train, X_test, y_train, y_test
 
 
-## 4.2 Training and testing!
+##  Training and testing!
 def train_logistic_regression(X_train, X_test, y_train, y_test):
     from sklearn.model_selection import GridSearchCV
     from sklearn.linear_model import LogisticRegression
