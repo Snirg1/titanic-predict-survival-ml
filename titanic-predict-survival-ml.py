@@ -1,30 +1,8 @@
-# # Name of student #1:
-# # ID of  student #1:
-
-
-# # Download the "Titanic - Machine Learning from Disaster" dataset, either from Kaggle (registration required) or from the course's website
+# # Download the "Titanic - Machine Learning from Disaster" dataset from Kaggle (registration required)
 # # https://www.kaggle.com/competitions/titanic/
-# # To quote from the website:
-# # "This is the legendary Titanic ML competition – the best, first challenge for you to dive into ML"
-# # The goal of this exercise is to explore the dataset a bit, get some insights about important attributes of survivors and build an end-to-end machine learning model which predicts the survival of passengers on board the Titanic.
-#
-# # In this exercise, we first explore the data, and then try to predict the survival odds.
-# # You are free to use as many loops as you like, and any library functions from numpy, pandas and sklearn, etc...
-# # But you should remember, that if you are iterating over the rows of a DataFrame - most probably you're doing something wrong, not to mention it is going to be VERY slow.
-#
-# # You should implement the body of each function. The functions are invoked in the correct order in the supplied main section.
+# # The goal is to explore the dataset a bit, get some insights about important attributes of survivors and build an end-to-end machine learning model which predicts the survival of passengers on board the Titanic.
+# # We first explore the data, and then try to predict the survival odds.
 # # The main function implements an end-to-end classification pipeline including mainly a data EDA and prediction parts.
-# # Note that you should fill your code in the placeholders denoted by "<your code here>" and/or  #! your code here. It does NOT imply a single-line solution
-# # Make sure that you didn't miss any code filling part by making sure that main() function runs with no Exceptions.
-# # You are free to change the body of the functions as you like as long as it performs the required printings and returns the expected variables.
-# # In all functions the required returned variables are explicitly stated.
-#
-# # Final submission instruction: in addition to stating your names and ID numbers in the body of this file, name the file in the following way:
-# #
-# # ex3_FirstName1_LastName1_FirstName2_LastName2.py
-# #
-# # where FirstName1, ... stand, naturally, for your name(s)
-
 
 import numpy as np
 import pandas as pd
@@ -36,7 +14,6 @@ plt.ion()
 
 
 # 1.
-# Familiarization. Download the dataset from the course's website to your pc / colab, and load it
 ## 1.1.
 ## Load train.csv
 def load_train_data():
@@ -235,11 +212,7 @@ def survival_vs_age(df):
     plt.close('Age, Not Survived')
     plt.figure('Age, Not Survived')
     not_survived_df['Age'].hist(bins="auto")
-
-    # TODO:BONUS IF WE HAVE TIME LEFT
-    # ! Bonus 1: plot 4 histograms of age: for women that survived and not, and for men tat survived and not
-    # ! Bonus 2: plot 6 histograms of age: for survivors and casualties of each of the 3 classes
-    # TODO: NOTE TO THE CHECKER THAT PYCHARM DEMAND US TO SET BLOCK=TRUE as plt.show() param
+    
     plt.show(block=True)
     return
 
@@ -266,8 +239,6 @@ def survival_correlations(df):
     for k in most_important_keys:
         res[k] = corr[k]
 
-    # // TODO: Check what is important_feats
-    # important_feats = ...
     important_corrs = res
     print(important_corrs)
 
@@ -276,10 +247,10 @@ def survival_correlations(df):
 
 # 4. Predicting survival!!!
 # We're finally ready to build a model and predict survival!
-# In this section, df_one_hot should include all the transformations and additions we've done to the data, including, of course, the one-hot
+# In this section, df_one_hot include all the transformations and additions we've done to the data, including, of course, the one-hot
 # encoding of class and port of boarding (Embarked), and the binary "Sex" column, and also with the addition of the log1p scaled variables.
 # But including too much features, not to metntion redundant ones (think log1p_Age and Age), can deteriorate the performance.
-# Based on the correlations of the numeric data to survival, and the impact of the categorical data, you're encouraged to pick the best features
+# Based on the correlations of the numeric data to survival, and the impact of the categorical data, we will pick the best features
 # that will yield the best testing results.
 
 ## 4.1 split data into train and test sets
@@ -334,7 +305,7 @@ def warn(*args, **kargs):
 
 
 if __name__ == '__main__':
-    # an example of the usage of the functions
+    
     import warnings
 
     warnings.warn = warn
